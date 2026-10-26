@@ -90,3 +90,13 @@ Al elegir **Cargar modelo real**, la aplicación solicita el tokenizador y el mo
 Se incorpora `tooltips.js`, con explicaciones en español para controles, parámetros, gráficos probabilísticos, contexto, motores de generación y tokenización OpenAI. Botones de ayuda ⓘ con `aria-label`, `aria-expanded`, teclado, Escape y cierre al pulsar fuera. El panel se reposiciona según el espacio disponible y se cierra al desplazarse o cambiar el tamaño de la ventana. Los contenidos distinguen simulación de inferencia real y tokens BPE de unidades didácticas.
 
 Pruebas manuales recomendadas: abrir ⓘ de temperatura; cambiar Top-k/Top-p; abrir ayuda con Enter/Espacio y cerrar con Escape; revisar paneles en móviles; comprobar que la ayuda no interfiere en los botones de generación; verificar sección 05. Los commits se han realizado en `main`, pero aún no existe una prueba automatizada en navegador para esta iteración.
+
+## Vista previa del rediseño
+
+- Aplicación estable: https://juliopez.github.io/generacion-texto-ia-es/
+- Rediseño experimental: https://juliopez.github.io/generacion-texto-ia-es/preview/
+- Rama de trabajo: `feature/transformer-visual`.
+- Origen de la vista previa: `visual.html` y `visual.js` de esa rama.
+- Workflow `.github/workflows/sync-preview.yml`: al actualizar esos archivos en la rama experimental, sincroniza `preview/index.html` y `preview/visual.js` en `main`. GitHub Pages continúa publicando desde `main` / raíz, sin sustituir la versión estable.
+- Requiere que GitHub Actions tenga permiso de escritura para `GITHUB_TOKEN` y que la protección de `main` permita este commit automatizado. Si el workflow falla, examinar su ejecución en Actions.
+- Vista de arquitectura todavía conceptual: matrices y flujos internos ilustrativos, no activaciones observadas de un LLM.
