@@ -44,3 +44,18 @@ Las visualizaciones son válidas para describir **conceptualmente** la generaci�
 Inspirado en el enfoque visual de [Transformer Explainer (Polo Club)](https://poloclub.github.io/transformer-explainer/). Esta aplicación es una implementación didáctica nueva, no una copia del proyecto original.
 
 Versión inicial: 26 de octubre de 2026.
+
+## Versión 0.2 — 26 octubre 2026
+
+- Comparación visual de dos distribuciones: **original** (frecuencias contextuales normalizadas) y **final** (temperatura + Top-k/Top-p). No confundir original con logits de un Transformer.
+- Botón **Deshacer token** para recuperar el contexto y volver a experimentar con los controles.
+- Barras dobles y porcentajes separados para observar cómo los parámetros modifican las opciones.
+- Importante: los resultados siguen procediendo del motor probabilístico didáctico; una integración con un modelo neuronal real se considera un hito posterior y deberá validarse técnicamente.
+
+### Verificación funcional recomendada
+
+1. Ingresar una frase en español y generar tres unidades; deshacer una y comprobar que el contador disminuye.
+2. Cambiar temperatura de 0.2 a 1.8; observar cambios en la segunda columna (la distribución original permanece igual para el mismo contexto).
+3. Cambiar Top-k de 1 a 5; comprobar que la distribución final excluye menos candidatos.
+4. Seleccionar Top-p y modificar p; comprobar que el subconjunto aceptado se ajusta a la masa probabilística acumulada.
+5. Confirmar funcionamiento en móvil y escritorio.
