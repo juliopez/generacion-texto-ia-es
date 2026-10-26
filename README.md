@@ -84,3 +84,9 @@ Al elegir **Cargar modelo real**, la aplicación solicita el tokenizador y el mo
 - Enlace al [tokenizador oficial de OpenAI](https://platform.openai.com/tokenizer) e **iframe opcional** activado por el usuario; el sitio externo puede prohibir ser incrustado mediante políticas de seguridad. El tokenizador integrado es independiente y no depende del iframe.
 - No confundir las codificaciones OpenAI con el tokenizador del motor GPT-2 español: sus IDs y segmentaciones no son intercambiables.
 - Estado: cambios guardados en GitHub; carga dinámica desde CDN y visualización del iframe no verificadas aún mediante prueba integral en navegador.
+
+## Versión 0.5 — Ayuda contextual (26 octubre 2026)
+
+Se incorpora `tooltips.js`, con explicaciones en español para controles, parámetros, gráficos probabilísticos, contexto, motores de generación y tokenización OpenAI. Botones de ayuda ⓘ con `aria-label`, `aria-expanded`, teclado, Escape y cierre al pulsar fuera. El panel se reposiciona según el espacio disponible y se cierra al desplazarse o cambiar el tamaño de la ventana. Los contenidos distinguen simulación de inferencia real y tokens BPE de unidades didácticas.
+
+Pruebas manuales recomendadas: abrir ⓘ de temperatura; cambiar Top-k/Top-p; abrir ayuda con Enter/Espacio y cerrar con Escape; revisar paneles en móviles; comprobar que la ayuda no interfiere en los botones de generación; verificar sección 05. Los commits se han realizado en `main`, pero aún no existe una prueba automatizada en navegador para esta iteración.
