@@ -65,3 +65,13 @@ Versión inicial: 26 de octubre de 2026.
 Se añade una representación sincronizada de contexto visible → candidatos con probabilidades finales → unidad seleccionada. Los datos provienen del mismo motor didáctico que alimenta las barras, evitando gráficos ficticios de atención. El flujo se recalcula al editar texto, cambiar parámetros, generar, reiniciar o deshacer. Se adapta a pantallas pequeñas.
 
 **Investigación del motor real:** `onnx-community/LFM2-700M-ONNX` declara compatibilidad con Transformers.js y español, pero es un modelo híbrido, no un Transformer clásico puro. Requiere evaluar tamaño, licencia, compatibilidad en navegadores y acceso a logits antes de incorporarlo. No se integra como motor por defecto ni se declara validado. Alternativas LLM multilingües pueden exceder la memoria disponible en equipos docentes. Referencia: https://huggingface.co/onnx-community/LFM2-700M-ONNX .
+
+## Versión 0.3 experimental — Transformer español en navegador
+
+Se incorpora un motor optativo `real-engine.js` que intenta cargar [bnicenboim/gpt2-spanish-onnx](https://huggingface.co/bnicenboim/gpt2-spanish-onnx), exportación ONNX de DeepESP/gpt2-spanish bajo licencia MIT. Es un modelo causal entrenado sobre textos españoles, no un chat ni un sistema de instrucciones. La carga usa Transformers.js desde CDN y descarga pesos ONNX externos; no requiere servidor propio. El simulador existente sigue siendo el modo predeterminado.
+
+Al elegir **Cargar modelo real**, la aplicación solicita el tokenizador y el modelo, calcula logits del último paso, aplica softmax estable, temperatura, Top-k/Top-p y realiza muestreo, mostrando probabilidades originales y finales del vocabulario. En el modo real, las unidades generadas pueden ser fragmentos subléxicos en vez de palabras completas.
+
+**Estado:** código integrado en GitHub, pero la descarga del modelo, el formato exacto de salida del grafo ONNX, la compatibilidad de `dtype=q8` y la ejecución completa en navegadores aún **no están validados experimentalmente**. Si falla, el usuario debe regresar al simulador y el fallo se mostrará en la interfaz. Los recursos del modelo son de terceros y su disponibilidad puede variar.
+
+**Pruebas necesarias:** Chrome de escritorio, primer arranque sin caché, generación de una unidad, comparación de probabilidades, temperatura, Top-k y Top-p, y degradación elegante sin conectividad. No declarar el motor real operativo hasta completar dichas pruebas.
