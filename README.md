@@ -90,3 +90,22 @@ Al elegir **Cargar modelo real**, la aplicación solicita el tokenizador y el mo
 Se incorpora `tooltips.js`, con explicaciones en español para controles, parámetros, gráficos probabilísticos, contexto, motores de generación y tokenización OpenAI. Botones de ayuda ⓘ con `aria-label`, `aria-expanded`, teclado, Escape y cierre al pulsar fuera. El panel se reposiciona según el espacio disponible y se cierra al desplazarse o cambiar el tamaño de la ventana. Los contenidos distinguen simulación de inferencia real y tokens BPE de unidades didácticas.
 
 Pruebas manuales recomendadas: abrir ⓘ de temperatura; cambiar Top-k/Top-p; abrir ayuda con Enter/Espacio y cerrar con Escape; revisar paneles en móviles; comprobar que la ayuda no interfiere en los botones de generación; verificar sección 05. Los commits se han realizado en `main`, pero aún no existe una prueba automatizada en navegador para esta iteración.
+
+## Rama de rediseño: `feature/transformer-visual`
+
+Se ha creado una ruta independiente `visual.html` acompañada de `visual.js` como primer prototipo de arquitectura visual interactiva:
+
+- Diagrama SVG de entrada y embeddings, Query, Key, Value, atención, residual, MLP y salida.
+- Inspección con ratón o teclado (Enter/Espacio) de los componentes del circuito y de cada token de entrada.
+- Distribución ilustrativa modificable con temperatura y Top-k/Top-p.
+- Cuadrícula de atención demostrativa; **no representa pesos de atención reales**.
+- Las probabilidades de esta vista son igualmente **ilustrativas**. Este prototipo todavía no muestra estados internos ni logits de un Transformer.
+- `main` y GitHub Pages permanecen sin modificar. Para probar la nueva interfaz, abrir el archivo de la rama en un servidor estático local o publicar una vista previa independiente.
+
+### Criterios para avanzar
+
+1. Seleccionar un modelo que exponga tensores de atención y estados ocultos, no solo logits.
+2. Identificar las dimensiones de capas, cabezas, tokens y modelos antes de conectar cada visualización.
+3. Distinguir en el producto entre valores exactos, simplificaciones visuales y simulación didáctica.
+4. Validar navegación, rendimiento, accesibilidad y experiencia en español.
+5. Adoptar la nueva vista en `main` solo después de validación funcional.
