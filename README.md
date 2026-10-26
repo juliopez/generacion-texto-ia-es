@@ -59,3 +59,9 @@ Versión inicial: 26 de octubre de 2026.
 3. Cambiar Top-k de 1 a 5; comprobar que la distribución final excluye menos candidatos.
 4. Seleccionar Top-p y modificar p; comprobar que el subconjunto aceptado se ajusta a la masa probabilística acumulada.
 5. Confirmar funcionamiento en móvil y escritorio.
+
+## Iteración 0.2.1 — flujo visual (26 de octubre de 2026)
+
+Se añade una representación sincronizada de contexto visible → candidatos con probabilidades finales → unidad seleccionada. Los datos provienen del mismo motor didáctico que alimenta las barras, evitando gráficos ficticios de atención. El flujo se recalcula al editar texto, cambiar parámetros, generar, reiniciar o deshacer. Se adapta a pantallas pequeñas.
+
+**Investigación del motor real:** `onnx-community/LFM2-700M-ONNX` declara compatibilidad con Transformers.js y español, pero es un modelo híbrido, no un Transformer clásico puro. Requiere evaluar tamaño, licencia, compatibilidad en navegadores y acceso a logits antes de incorporarlo. No se integra como motor por defecto ni se declara validado. Alternativas LLM multilingües pueden exceder la memoria disponible en equipos docentes. Referencia: https://huggingface.co/onnx-community/LFM2-700M-ONNX .
