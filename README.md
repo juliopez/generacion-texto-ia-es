@@ -75,3 +75,12 @@ Al elegir **Cargar modelo real**, la aplicación solicita el tokenizador y el mo
 **Estado:** código integrado en GitHub, pero la descarga del modelo, el formato exacto de salida del grafo ONNX, la compatibilidad de `dtype=q8` y la ejecución completa en navegadores aún **no están validados experimentalmente**. Si falla, el usuario debe regresar al simulador y el fallo se mostrará en la interfaz. Los recursos del modelo son de terceros y su disponibilidad puede variar.
 
 **Pruebas necesarias:** Chrome de escritorio, primer arranque sin caché, generación de una unidad, comparación de probabilidades, temperatura, Top-k y Top-p, y degradación elegante sin conectividad. No declarar el motor real operativo hasta completar dichas pruebas.
+
+## Versión 0.4 — Tokenización OpenAI (26 octubre 2026)
+
+- Sección **05 / TOKENIZACIÓN**, completamente en español, para analizar texto libre o reutilizar el prompt de generación.
+- Tokenización BPE real compatible con las codificaciones `o200k_base` y `cl100k_base` a través de la biblioteca abierta `gpt-tokenizer@3.4.0` (cargada bajo demanda desde CDN ESM).
+- Presentación de fragmentos con colores, IDs al pasar el cursor, número de tokens y caracteres.
+- Enlace al [tokenizador oficial de OpenAI](https://platform.openai.com/tokenizer) e **iframe opcional** activado por el usuario; el sitio externo puede prohibir ser incrustado mediante políticas de seguridad. El tokenizador integrado es independiente y no depende del iframe.
+- No confundir las codificaciones OpenAI con el tokenizador del motor GPT-2 español: sus IDs y segmentaciones no son intercambiables.
+- Estado: cambios guardados en GitHub; carga dinámica desde CDN y visualización del iframe no verificadas aún mediante prueba integral en navegador.
