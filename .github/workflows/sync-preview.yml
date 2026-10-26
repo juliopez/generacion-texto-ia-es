@@ -1,0 +1,47 @@
+name: Sincronizar vista previa visual
+
+on:
+  push:
+    branches:
+      - feature/transformer-visual
+    paths:
+      - 'visual.html'
+      - 'visual.js'
+      - '.github/workflows/sync-preview.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sync-visual-preview
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar rama principal
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+          persist-credentials: true
+      - name: Obtener vista experimental
+        run: |
+          git fetch origin feature/transformer-visual
+          mkdir -p preview
+          git show origin/feature/transformer-visual:visual.html > preview/index.html
+          git show origin/feature/transformer-visual:visual.js > preview/visual.js
+          sed -i 's/href="index.html">Volver al laboratorio/href="..\/">Volver al laboratorio/' preview/index.html
+      - name: Publicar vista previa en main
+        run: |
+          if git diff --quiet -- preview/index.html preview/visual.js; then
+            echo "Sin cambios"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add preview/index.html preview/visual.js
+          git commit -m "chore(preview): sincronizar arquitectura visual"
+          git push origin HEAD:main
