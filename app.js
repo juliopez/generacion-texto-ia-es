@@ -1,5 +1,6 @@
 'use strict';
 import {loadModel,predict} from './real-engine.js';
+import {tokenizeOpenAI} from './tokenizer-openai.js';
 /* Laboratorio probabilístico pedagógico, NO un Transformer. */
 const $=id=>document.getElementById(id);
 const corpora=[
@@ -42,3 +43,34 @@ function stop(){if(timer)clearInterval(timer);timer=null;$('auto').disabled=fals
 function reset(){stop();generated=[];output();if($('engine').value==='real'){$('bars').replaceChildren();$('flowCandidates').textContent='Genera para consultar el modelo';$('flowChosen').textContent='—'}refresh();$('flowChosen').textContent='—';$('explainTitle').textContent='¿Qué se está mostrando realmente?';$('explainBody').textContent='Este laboratorio utiliza un pequeño modelo probabilístico basado en frases en español. Genera palabras con una distribución calculada, no mediante un Transformer real. Las unidades visibles son palabras, no tokens subléxicos.'}
 function refresh(){$('tempOut').textContent=Number($('temperature').value).toFixed(1);const topk=document.querySelector('input[name=sampling]:checked').value==='topk';$('sampleValue').min=topk?'1':'10';$('sampleValue').max=topk?'8':'100';$('sampleValue').step=topk?'1':'5';let val=Number($('sampleValue').value);if(val>Number($('sampleValue').max)||val<Number($('sampleValue').min))$('sampleValue').value=topk?'5':'90';$('sampleOut').textContent=topk?'k = '+$('sampleValue').value:'p = '+(Number($('sampleValue').value)/100).toFixed(2);if($('engine').value==='demo')draw(distribution());else $('selectionInfo').textContent='Presiona «Generar token» para obtener la siguiente distribución real.'}
 $('loadReal').addEventListener('click',async()=>{if(realReady){$('engine').value='real';reset();return}const b=$('loadReal');b.disabled=true;try{await loadModel(s=>$('modelStatus').textContent=s);realReady=true;b.textContent='Modelo cargado';$('engine').value='real';reset();$('modelStatus').textContent='Modelo Transformer español preparado. Las probabilidades se calculan desde logits reales.'}catch(e){$('modelStatus').textContent='No se pudo cargar el modelo: '+String(e.message||e);b.disabled=false;$('engine').value='demo'}});$('engine').addEventListener('change',()=>{stop();if($('engine').value==='real'&&!realReady){$('modelStatus').textContent='Primero selecciona «Cargar modelo real».';$('engine').value='demo'}reset()});$('next').addEventListener('click',generate);$('undo').addEventListener('click',undo);$('reset').addEventListener('click',reset);$('auto').addEventListener('click',()=>{if(timer)return;$('auto').disabled=true;$('stop').disabled=false;generate();timer=setInterval(generate,Number($('speed').value))});$('stop').addEventListener('click',stop);$('speed').addEventListener('change',()=>{if(timer){stop();$('auto').click()}});$('prompt').addEventListener('input',reset);$('temperature').addEventListener('input',refresh);$('sampleValue').addEventListener('input',refresh);document.querySelectorAll('input[name=sampling]').forEach(el=>el.addEventListener('change',()=>{$('sampleValue').value=el.value==='topk'?'5':'90';refresh()}));document.querySelectorAll('[data-example]').forEach(el=>el.addEventListener('click',()=>{$('prompt').value=el.dataset.example;reset()}));reset();
+/* Sección independiente de tokenización OpenAI. */
+let analyzingOpenAI=false;
+$('copyToTokenizer').addEventListener('click',()=>{$('tokenizerText').value=$('prompt').value.trim()+generated.join($('engine').value==='real'?'':' ');$('tokenizerStatus').textContent='Texto copiado. Presiona «Analizar tokens».'});
+$('analyzeTokens').addEventListener('click',async()=>{
+ if(analyzingOpenAI)return;analyzingOpenAI=true;
+ const button=$('analyzeTokens');button.disabled=true;
+ const text=$('tokenizerText').value;
+ $('tokenizerStatus').textContent='Cargando codificación BPE y analizando…';
+ try{
+  const r=await tokenizeOpenAI(text,$('openaiEncoding').value);
+  $('openaiTokenCount').textContent=r.ids.length;
+  $('openaiCharCount').textContent=[...text].length;
+  const box=$('openaiTokenSegments');box.replaceChildren();
+  for(let i=0;i<r.parts.length;i++){
+   const token=r.parts[i];const span=document.createElement('span');
+   span.className='bpetoken shade'+i%6;
+   span.textContent=token.text||'∅';
+   span.title='ID: '+token.id+' · Fragmento '+(i+1);
+   span.setAttribute('aria-label','Fragmento '+(i+1)+', ID '+token.id);
+   box.append(span);
+  }
+  $('tokenizerStatus').textContent='Tokenización real completada ('+r.encoding+'). Pasa el cursor sobre un fragmento para ver su ID.';
+ }catch(err){$('tokenizerStatus').textContent='No se pudo cargar el tokenizador: '+String(err.message||err)+'. Comprueba la conexión a Internet.'}
+ finally{analyzingOpenAI=false;button.disabled=false}
+});
+$('loadIframe').addEventListener('click',()=>{
+ const mount=$('officialFrameMount');mount.replaceChildren();
+ const frame=document.createElement('iframe');
+ frame.src='https://platform.openai.com/tokenizer';frame.title='Tokenizador oficial de OpenAI';frame.loading='lazy';frame.referrerPolicy='no-referrer';frame.style.width='100%';frame.style.height='480px';frame.style.border='1px solid #d7e8ef';frame.style.borderRadius='10px';
+ mount.append(frame);$('loadIframe').disabled=true;
+});
